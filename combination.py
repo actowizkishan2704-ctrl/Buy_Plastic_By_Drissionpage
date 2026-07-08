@@ -3,6 +3,7 @@ from DrissionPage.common import Keys
 import time
 import json
 import os
+import gzip
 
 Browser=ChromiumPage()
 page=Browser.latest_tab
@@ -11,7 +12,7 @@ os.makedirs("saved_pages/categories", exist_ok=True)
 os.makedirs("saved_pages/products", exist_ok=True)
 os.makedirs("saved_pages/combinations", exist_ok=True)
 page.get('https://buyplastic.com/materials/')
-with open("saved_pages/home/home.html", "w", encoding="utf-8") as f:
+with gzip.open("saved_pages/home/home.html.gz", "w", encoding="utf-8") as f:
     f.write(page.html)
 all_combination_details=[]
 category_cards=page.eles("xpath://article[@class='material-card material-category-card']/a/@href").get.links()
@@ -19,7 +20,7 @@ for cat_no,product in enumerate(category_cards,1):
     print(product,"scrapping.........")
     new_page=Browser.new_tab()
     new_page.get(product)
-    with open(f"saved_pages/categories/category_{cat_no}.html","w",encoding="utf-8") as f:
+    with open(f"saved_pages/categories/category_{cat_no}.html.gz","w",encoding="utf-8") as f:
         f.write(new_page.html)
     new_page.set.activate()
     
@@ -29,7 +30,7 @@ for cat_no,product in enumerate(category_cards,1):
         print(card,"________________")
         prod_page=Browser.new_tab()
         prod_page.get(card)
-        with open(f"saved_pages/products/product_{cat_no}_{prod_no}.html","w",encoding="utf-8") as f:
+        with open(f"saved_pages/products/product_{cat_no}_{prod_no}.html.gz","w",encoding="utf-8") as f:
             f.write(prod_page.html)
         prod_page.set.activate()
         product_data=[]
@@ -50,7 +51,7 @@ for cat_no,product in enumerate(category_cards,1):
                             radio_3=radios[2].eles("xpath://div[contains(@class, 'form-option-wrapper')]//input")
                             for size in radio_3:
                                 size.click() 
-                                with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html","w",encoding="utf-8") as f:
+                                with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html.gz","w",encoding="utf-8") as f:
                                     f.write(prod_page.html)
 
                                 combo_no += 1                       
@@ -64,7 +65,7 @@ for cat_no,product in enumerate(category_cards,1):
                                 })
                         else:
                             
-                            with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html","w",encoding="utf-8") as f:
+                            with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html.gz","w",encoding="utf-8") as f:
                                 f.write(prod_page.html)
 
                             combo_no += 1  
@@ -77,7 +78,7 @@ for cat_no,product in enumerate(category_cards,1):
                                 "stocks_count":current_stock
                             })
                 else:
-                    with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html","w",encoding="utf-8") as f:
+                    with open(f"saved_pages/combinations/product_{cat_no}_{prod_no}_combo_{combo_no}.html.gz","w",encoding="utf-8") as f:
                         f.write(prod_page.html)
 
                     combo_no += 1 
